@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Twittr</title>
+    <style>
+        body {
+            font-family: sans-serif;
+            line-height: 1.6;
+            margin: 0;
+            padding: 20px;
+            background-color: #f4f4f4;
+            color: #333;
+        }
+        .container {
+            max-width: 800px;
+            margin: auto;
+            background: #fff;
+            padding: 20px 30px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        h1 {
+            color: #2c3e50;
+            text-align: center;
+        }
+        .post {
+            border-bottom: 1px solid #eee;
+            padding-bottom: 20px;
+            margin-bottom: 20px;
+        }
+        .post:last-child {
+            border-bottom: none;
+            margin-bottom: 0;
+            padding-bottom: 0;
+        }
+        .post-title {
+            color: #3498db;
+        }
+        .post-author, .post-date {
+            font-size: 0.9em;
+            color: #7f8c8d;
+        }
+        .post-content {
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>Twittr</h1>
+    <div id="tweets">
+        </div>
+</div>
+
+<script>
+    // Sayfa yüklendiğinde çalışacak fonksiyon
+    document.addEventListener('DOMContentLoaded', () => {
+        fetch('tweets.json') // posts.json dosyasını çek
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Network response was not ok ' + response.statusText);
+                }
+                return response.json(); // Yanıtı JSON olarak işle
+            })
+            .then(posts => {
+                const blogPostsContainer = document.getElementById('blog-posts');
+                
+                // Her bir post için HTML oluştur
+                posts.forEach(post => {
+                    const postElement = document.createElement('div');
+                    postElement.classList.add('post');
+                    
+                    // Post içeriğini HTML'e yerleştir
+                    postElement.innerHTML = `
+                        <h2 class="post-title">${post.title}</h2>
+                        <p class="post-author">Yazar: ${post.author}</p>
+                        <p class="post-date">Tarih: ${post.date}</p>
+                        <div class="post-content">
+                            <p>${post.content}</p>
+                        </div>
+                    `;
+                    
+                    blogPostsContainer.appendChild(postElement);
+                });
+            })
+            .catch(error => {
+                console.error('Fetch işlemi sırasında bir sorun oluştu:', error);
+                document.getElementById('tweets').innerHTML = '<p>Yazılar yüklenirken bir hata oluştu. Lütfen daha sonra tekrar deneyin.</p>';
+            });
+    });
+</script>
+
+</body>
+</html>
